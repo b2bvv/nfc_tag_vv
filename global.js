@@ -27,9 +27,15 @@ function getProductById(productId) {
 }
 
 function getCurrentProductId() {
+  // Try to get product ID from hash (e.g., #pu-erh-tea) - for GitHub Pages
+  const hash = window.location.hash.replace('#', '').trim();
+  if (hash) {
+    return hash;
+  }
+  
   // Try to get product ID from URL path (e.g., /pu-erh-tea)
   const path = window.location.pathname;
-  const pathParts = path.split('/').filter(part => part && part !== 'index.html');
+  const pathParts = path.split('/').filter(part => part && part !== 'index.html' && part !== '');
   
   if (pathParts.length > 0) {
     const productIdFromPath = pathParts[pathParts.length - 1];

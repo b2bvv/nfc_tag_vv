@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Redirecting...</title>
+  <script>
+    // GitHub Pages 404 handler - redirect to index.html with product parameter
+    (function() {
+      const path = window.location.pathname;
+      const pathParts = path.split('/').filter(part => part && part !== '' && part !== '404.html');
+      
+      // List of valid product IDs
+      const validProducts = [
+        'pu-erh-tea',
+        'protein-cream-tubes',
+        'potato-cake',
+        'ant-balls',
+        'tangerine-juice',
+        'waffle-tubes'
+      ];
+      
+      if (pathParts.length > 0) {
+        const lastPart = pathParts[pathParts.length - 1];
+        // Check if it's a valid product ID (not a file with extension)
+        if (lastPart && !lastPart.includes('.') && validProducts.includes(lastPart)) {
+          // Redirect to index.html with product parameter
+          const basePath = path.substring(0, path.lastIndexOf('/') + 1);
+          window.location.replace(basePath + 'index.html?product=' + lastPart);
+          return;
+        }
+      }
+      
+      // If not a valid product, redirect to main page
+      const basePath = path.substring(0, path.lastIndexOf('/') + 1);
+      window.location.replace(basePath + 'index.html');
+    })();
+  </script>
+</head>
+<body>
+  <p>Redirecting...</p>
+</body>
+</html>
+
