@@ -6,6 +6,7 @@ let productsData = null;
 let currentProduct = null;
 // отметка времени открытия страницы (UTC)
 const PAGE_OPENED_AT = new Date();
+let pageViewSent = false;
 
 async function loadProductsData() {
   try {
@@ -183,6 +184,27 @@ function populateProductData(product) {
 
 }
 
+function sendPageViewTelemetry(product) {
+  if (pageViewSent || !GOOGLE_APPS_SCRIPT_URL) return;
+
+  const payload = {
+    eventType: 'page_view',
+    pageOpenedAt: PAGE_OPENED_AT.toISOString(),
+    submitTime: new Date().toISOString(),
+    productId: product?.id || '',
+    pageUrl: window.location.href,
+  };
+
+  fetch(GOOGLE_APPS_SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+    mode: 'no-cors',
+  }).catch((err) => console.error('Telemetry error:', err));
+
+  pageViewSent = true;
+}
+
 async function initProductData() {
   const data = await loadProductsData();
   if (!data) {
@@ -195,6 +217,7 @@ async function initProductData() {
   
   if (currentProduct) {
     populateProductData(currentProduct);
+    sendPageViewTelemetry(currentProduct);
   } else {
     console.error(`Product with id "${productId}" not found`);
   }
@@ -254,6 +277,7 @@ function initFeedbackForm() {
 
     // Compose payload for Google Sheets
     const payload = {
+      eventType: 'feedback',
       pageOpenedAt: PAGE_OPENED_AT.toISOString(),
       submitTime: new Date().toISOString(),
       productId: currentProduct?.id || '',
@@ -264,15 +288,6 @@ function initFeedbackForm() {
       'Есть что-то, что ты хотел(а) бы добавить или улучшить?': text,
     };
 
-    // Basic validation
-    if (!selectedStars) {
-      alert('Пожалуйста, выбери оценку от 1 до 5 звёзд.');
-      return;
-    }
-    if (!selectedInfo || !selectedLanding) {
-      alert('Пожалуйста, выбери варианты ответов.');
-      return;
-    }
     if (!GOOGLE_APPS_SCRIPT_URL) {
       alert('Не настроен URL Google Apps Script. Сообщи ссылку, и я подключу её.');
       return;
