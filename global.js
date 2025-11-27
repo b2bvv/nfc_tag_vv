@@ -1,9 +1,11 @@
 // Configure your Google Apps Script Web App URL here
-const GOOGLE_APPS_SCRIPT_URL = 'https://denislialinlialin1998.app.n8n.cloud/webhook-test/802a9236-4875-4aa3-903a-f1aaea2e8770';
+const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw1uqaMm6OYHgTK8JNTR9oBUnD2GG7Y-7dlrW7IlTw9oy4Jhi0Gny1CgoEWUC_78CpH/exec';
 
 // Product data loading and rendering
 let productsData = null;
 let currentProduct = null;
+// отметка времени открытия страницы (UTC)
+const PAGE_OPENED_AT = new Date();
 
 async function loadProductsData() {
   try {
@@ -252,6 +254,10 @@ function initFeedbackForm() {
 
     // Compose payload for Google Sheets
     const payload = {
+      pageOpenedAt: PAGE_OPENED_AT.toISOString(),
+      submitTime: new Date().toISOString(),
+      productId: currentProduct?.id || '',
+      pageUrl: window.location.href,
       user: String(selectedStars || ''),
       'Хватило ли тебе информации обо мне и моём составе?': selectedInfo,
       'Хотел(а) бы ты, чтобы у каждого продукта был такой лендинг?': selectedLanding,
