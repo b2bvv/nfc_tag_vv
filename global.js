@@ -1,11 +1,12 @@
 // Configure your Google Apps Script Web App URL here
-const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxoKkvH73HfzYjLjwEzn0AaZJp5R5aPmj2uOsQVIT6mq7TtXa6qV16Uvt4kZqq2EHBV/exec';
+const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzTi6M-vxnvhBUyVsBzM32ePuKbh3hXEFo3ggERyfeRzGkWJ_ZfSwzCbJ8CPMRgBlWa/exec';
 
 // Product data loading and rendering
 let productsData = null;
 let currentProduct = null;
 // отметка времени открытия страницы (UTC)
 const PAGE_OPENED_AT = new Date();
+const SESSION_ID = crypto.randomUUID();
 let pageViewSent = false;
 
 async function loadProductsData() {
@@ -189,6 +190,7 @@ function sendPageViewTelemetry(product) {
 
   const payload = {
     eventType: 'page_view',
+    sessionId: SESSION_ID,
     pageOpenedAt: PAGE_OPENED_AT.toISOString(),
     submitTime: new Date().toISOString(),
     productId: product?.id || '',
@@ -278,6 +280,7 @@ function initFeedbackForm() {
     // Compose payload for Google Sheets
     const payload = {
       eventType: 'feedback',
+      sessionId: SESSION_ID,
       pageOpenedAt: PAGE_OPENED_AT.toISOString(),
       submitTime: new Date().toISOString(),
       productId: currentProduct?.id || '',
