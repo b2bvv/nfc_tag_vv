@@ -27,33 +27,33 @@ function getProductById(productId) {
 }
 
 function getCurrentProductId() {
-  // Try to get product ID from hash (e.g., #pu-erh-tea) - for GitHub Pages
+  const validIds = (productsData?.products || []).map((p) => p.id);
+
+  // 1) Hash routing (e.g., https://.../#pu-erh-tea)
   const hash = window.location.hash.replace('#', '').trim();
-  if (hash) {
+  if (hash && validIds.includes(hash)) {
     return hash;
   }
   
-  // Try to get product ID from URL path (e.g., /pu-erh-tea)
+  // 2) Pretty URLs (e.g., https://.../pu-erh-tea)
   const path = window.location.pathname;
   const pathParts = path.split('/').filter(part => part && part !== 'index.html' && part !== '');
-  
   if (pathParts.length > 0) {
     const productIdFromPath = pathParts[pathParts.length - 1];
-    // Check if it's a valid product ID (not a file extension)
-    if (productIdFromPath && !productIdFromPath.includes('.')) {
+    if (validIds.includes(productIdFromPath)) {
       return productIdFromPath;
     }
   }
   
-  // Try to get product ID from URL parameter (e.g., ?product=pu-erh-tea)
+  // 3) Query parameter (e.g., ?product=pu-erh-tea)
   const urlParams = new URLSearchParams(window.location.search);
   const productId = urlParams.get('product');
-  if (productId) {
+  if (productId && validIds.includes(productId)) {
     return productId;
   }
   
-  // Default to first product
-  return productsData?.products?.[0]?.id || 'pu-erh-tea';
+  // 4) Default fallback
+  return validIds[0] || 'pu-erh-tea';
 }
 
 function getNestedValue(obj, path) {
