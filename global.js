@@ -1,5 +1,5 @@
 // Configure your Google Apps Script Web App URL here
-const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw1uqaMm6OYHgTK8JNTR9oBUnD2GG7Y-7dlrW7IlTw9oy4Jhi0Gny1CgoEWUC_78CpH/exec';
+const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxoKkvH73HfzYjLjwEzn0AaZJp5R5aPmj2uOsQVIT6mq7TtXa6qV16Uvt4kZqq2EHBV/exec';
 
 // Product data loading and rendering
 let productsData = null;
