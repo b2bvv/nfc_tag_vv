@@ -124,14 +124,16 @@ function populateProductData(product) {
     } else if (fieldName === 'composition') {
       // Special handling for composition - split by comma but preserve commas inside parentheses and in numbers
       if (typeof value === 'string') {
+        // First, replace commas in numbers (e.g., 72,5 or 8,5) with a temporary marker
+        // Pattern: digit, comma, digit (possibly with space and % after)
+        let processedValue = value.replace(/(\d),(\d)/g, '$1__COMMA_IN_NUMBER__$2');
+        
         const ingredients = [];
         let currentIngredient = '';
         let parenLevel = 0;
         
-        for (let i = 0; i < value.length; i++) {
-          const char = value[i];
-          const prevChar = i > 0 ? value[i - 1] : '';
-          const nextChar = i < value.length - 1 ? value[i + 1] : '';
+        for (let i = 0; i < processedValue.length; i++) {
+          const char = processedValue[i];
           
           if (char === '(') {
             parenLevel++;
@@ -140,25 +142,12 @@ function populateProductData(product) {
             parenLevel--;
             currentIngredient += char;
           } else if (char === ',' && parenLevel === 0) {
-            // Check if comma is part of a number (e.g., 72,5 or 8,5 %)
-            // Comma is part of number if: digit before comma AND (digit after OR space+digit after OR space+% after)
-            const isNumberComma = /^\d$/.test(prevChar) && (
-              /^\d$/.test(nextChar) || 
-              /^\s\d/.test(value.substring(i, i + 3)) ||
-              /^\s%/.test(value.substring(i, i + 3))
-            );
-            
-            if (!isNumberComma) {
-              // Only split on comma if we're not inside parentheses and it's not part of a number
-              const trimmed = currentIngredient.trim();
-              if (trimmed.length > 0) {
-                ingredients.push(trimmed);
-              }
-              currentIngredient = '';
-            } else {
-              // Keep comma as part of the number
-              currentIngredient += char;
+            // Split on comma only if we're not inside parentheses
+            const trimmed = currentIngredient.trim();
+            if (trimmed.length > 0) {
+              ingredients.push(trimmed);
             }
+            currentIngredient = '';
           } else {
             currentIngredient += char;
           }
@@ -170,7 +159,12 @@ function populateProductData(product) {
           ingredients.push(trimmed);
         }
         
-        element.innerHTML = ingredients.map(ingredient => `<li>${ingredient}</li>`).join('');
+        // Restore commas in numbers and clean up
+        const finalIngredients = ingredients.map(ingredient => 
+          ingredient.replace(/__COMMA_IN_NUMBER__/g, ',').trim()
+        ).filter(ing => ing.length > 0);
+        
+        element.innerHTML = finalIngredients.map(ingredient => `<li>${ingredient}</li>`).join('');
       }
     } else {
       // For text content
