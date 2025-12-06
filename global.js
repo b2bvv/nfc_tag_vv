@@ -122,7 +122,7 @@ function populateProductData(product) {
         element.innerHTML = value.map(allergen => `<li>${allergen}</li>`).join('');
       }
     } else if (fieldName === 'composition') {
-      // Special handling for composition - split by comma but preserve commas inside parentheses
+      // Special handling for composition - split by comma but preserve commas inside parentheses and in numbers
       if (typeof value === 'string') {
         const ingredients = [];
         let currentIngredient = '';
@@ -130,6 +130,8 @@ function populateProductData(product) {
         
         for (let i = 0; i < value.length; i++) {
           const char = value[i];
+          const prevChar = i > 0 ? value[i - 1] : '';
+          const nextChar = i < value.length - 1 ? value[i + 1] : '';
           
           if (char === '(') {
             parenLevel++;
@@ -138,12 +140,25 @@ function populateProductData(product) {
             parenLevel--;
             currentIngredient += char;
           } else if (char === ',' && parenLevel === 0) {
-            // Only split on comma if we're not inside parentheses
-            const trimmed = currentIngredient.trim();
-            if (trimmed.length > 0) {
-              ingredients.push(trimmed);
+            // Check if comma is part of a number (e.g., 72,5 or 8,5 %)
+            // Comma is part of number if: digit before comma AND (digit after OR space+digit after OR space+% after)
+            const isNumberComma = /^\d$/.test(prevChar) && (
+              /^\d$/.test(nextChar) || 
+              /^\s\d/.test(value.substring(i, i + 3)) ||
+              /^\s%/.test(value.substring(i, i + 3))
+            );
+            
+            if (!isNumberComma) {
+              // Only split on comma if we're not inside parentheses and it's not part of a number
+              const trimmed = currentIngredient.trim();
+              if (trimmed.length > 0) {
+                ingredients.push(trimmed);
+              }
+              currentIngredient = '';
+            } else {
+              // Keep comma as part of the number
+              currentIngredient += char;
             }
-            currentIngredient = '';
           } else {
             currentIngredient += char;
           }
