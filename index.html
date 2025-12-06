@@ -46,10 +46,6 @@
 #hero {
   padding-top: 12px;
   padding-bottom: 16px;
-  display: flex;
-  flex-direction: column;
-  max-height: calc(100vh - 60px);
-  min-height: 0;
 }
 .hero-image-container {
   background-color: var(--color-gray-bg);
@@ -58,7 +54,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 24px;
   position: relative;
   overflow: hidden;
   width: 100%;
@@ -66,9 +62,6 @@
   aspect-ratio: 342 / 547;
   margin-left: auto;
   margin-right: auto;
-  flex-shrink: 1;
-  min-height: 0;
-  max-height: calc(100vh - 120px);
 }
 .hero-image {
   width: 100%;
@@ -88,50 +81,9 @@
   font-family: var(--font-family-display);
   font-weight: 400;
   font-size: 34px;
-  line-height: 1.1;
+  line-height: 1;
   text-align: center;
   color: var(--color-black);
-  flex-shrink: 0;
-  padding: 0 8px;
-}
-@media (max-height: 700px) {
-  #hero {
-    max-height: calc(100vh - 50px);
-  }
-  .hero-image-container {
-    max-height: calc(100vh - 110px);
-    margin-bottom: 12px;
-    aspect-ratio: auto;
-    height: auto;
-  }
-  .hero-title {
-    font-size: 28px;
-  }
-}
-@media (max-height: 600px) {
-  #hero {
-    max-height: calc(100vh - 40px);
-    padding-top: 8px;
-    padding-bottom: 8px;
-  }
-  .hero-image-container {
-    max-height: calc(100vh - 100px);
-    margin-bottom: 8px;
-    aspect-ratio: auto;
-    height: auto;
-  }
-  .hero-title {
-    font-size: 24px;
-    line-height: 1.2;
-  }
-}
-@media (max-width: 375px) {
-  .hero-image-container {
-    max-width: calc(100% - 48px);
-  }
-  .hero-title {
-    font-size: 28px;
-  }
 }
 
 /* CSS for section section:product-summary */
