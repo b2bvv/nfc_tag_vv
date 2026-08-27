@@ -1,0 +1,32 @@
+{
+	"version": 1,
+	"revision": "2026-08-27.1",
+	"period": {
+		"start": "2026-08-15",
+		"reset": "monthly"
+	},
+	"users": {
+		"1000100001": {
+			"email": "denisiklialin@yandex.ru",
+			"default_model": "auto",
+			"allowed_models": [
+				"auto",
+				"gpt-5.5",
+				"gpt-5.3-codex",
+				"claude-opus-4.6"
+			],
+			"tokens_millions": 20
+		},
+		"1000100002": {
+			"email": "pm.b2b.online@vkusvill.ru",
+			"default_model": "auto",
+			"allowed_models": [
+				"auto",
+				"gpt-5.5",
+				"gpt-5.3-codex",
+				"claude-opus-4.6"
+			],
+			"tokens_millions": 20
+		}
+	}
+}
